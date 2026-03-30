@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>计时器管理端</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 30px; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #00d4ff;
+    }
+    .stat-label { color: rgba(255,255,255,0.6); margin-top: 5px; }
+    .room-list {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .room-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .room-id { font-size: 1.5rem; font-weight: 700; color: #00d4ff; }
+    .room-info { color: rgba(255,255,255,0.6); font-size: 0.9rem; }
+    .connection-status {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.1);
+      font-size: 0.85rem;
+    }
+    .connection-status.connected { background: rgba(46, 204, 113, 0.3); }
+    .empty { text-align: center; padding: 40px; color: rgba(255,255,255,0.4); }
+  </style>
+</head>
+<body>
+  <div class="connection-status" id="status">连接中...</div>
+  <div class="container">
+    <h1>⏱️ 计时器管理端</h1>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value" id="totalRooms">0</div>
+        <div class="stat-label">活跃房间</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="totalUsers">0</div>
+        <div class="stat-label">在线用户</div>
+      </div>
+    </div>
+    <div class="room-list">
+      <h3 style="margin-bottom: 15px;">房间列表</h3>
+      <div id="roomList"><div class="empty">暂无活跃房间</div></div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // 管理端 - 仅展示，功能待扩展
+    const socket = io(window.location.origin);
+    
+    socket.on('connect', () => {
+      document.getElementById('status').textContent = '已连接';
+      document.getElementById('status').classList.add('connected');
+    });
+    
+    socket.on('disconnect', () => {
+      document.getElementById('status').textContent = '已断开';
+      document.getElementById('status').classList.remove('connected');
+    });
+
+    // 模拟数据展示
+    setInterval(() => {
+      // 实际项目中从服务器获取房间列表
+      document.getElementById('totalRooms').textContent = Math.floor(Math.random() * 10);
+      document.getElementById('totalUsers').textContent = Math.floor(Math.random() * 50);
+    }, 3000);
+  </script>
+</body>
+</html>
